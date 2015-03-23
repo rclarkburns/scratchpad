@@ -4,12 +4,18 @@
 
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in#answer-246128
 scratch_pad_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+if [ $# -eq 0 ]
+then
+	pad_extension='.md'
+else
+	pad_extension=$1
+fi
 pad_count=1
-pad="${scratch_pad_dir}/pad.md"
+pad="${scratch_pad_dir}/pad${pad_extension}"
 
 while :
 do
-	pad="${scratch_pad_dir}/pad_${pad_count}.md"
+	pad="${scratch_pad_dir}/pad_${pad_count}${pad_extension}"
 	if [ -f "${pad}" ]
 	then
 
@@ -22,20 +28,20 @@ do
 		echo "'D' - Delete"
 		echo "Anything else skips"
 		read pad_action
-		
+
 		if [ ${pad_action} == 'D' ]
 		then
 			rm ${pad}
 			break
 		fi
-		
+
 		if [ ${pad_action} == 'e' ]
 		then
 			break
 		fi
-		
+
 		pad_count=$((pad_count + 1))
-	
+
 	else
 		break
 	fi
