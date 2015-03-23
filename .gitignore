@@ -1,1 +1,6 @@
+# Editor
+.idea
+
+# Ignore scratchpads
 pad_*.md
+pad_*.txt
