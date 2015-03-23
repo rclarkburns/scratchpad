@@ -1,0 +1,35 @@
+#!/bin/bash
+# Author - clark@castironcoding.com
+# Purpose - Simple scratchpad 
+
+# http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in#answer-246128
+scratch_pad_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+pad_count=1
+pad="${scratch_pad_dir}/pad.md"
+
+while :
+do
+	pad="${scratch_pad_dir}/pad_${pad_count}.md"
+	if [ -f "${pad}" ]
+	then
+		echo ""
+		echo "Contents of ${pad}:"
+		cat ${pad}
+		echo ""
+		echo "[RESPOND!] Delete this scratch pad: ${pad}? ('y' or anything else to skip)"
+		read delete_pad
+		if [ ${delete_pad} == 'y' ]
+		then
+			rm ${pad}
+			break
+		else
+			pad_count=$((pad_count + 1))
+		fi
+	else
+		break
+	fi
+done
+
+vim ${pad}
+
+exit 0;
