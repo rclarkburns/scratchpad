@@ -12,19 +12,30 @@ do
 	pad="${scratch_pad_dir}/pad_${pad_count}.md"
 	if [ -f "${pad}" ]
 	then
-		echo ""
-		echo "Contents of ${pad}:"
+
+		echo "\n-- ${pad} --\n"
 		cat ${pad}
-		echo ""
-		echo "[RESPOND!] Delete this scratch pad: ${pad}? ('y' or anything else to skip)"
-		read delete_pad
-		if [ ${delete_pad} == 'y' ]
+
+		echo "\n-- End of ${pad} --\n"
+		echo "[RESPOND!] Existing scratchpad: ${pad} found."
+		echo "'e' - Edit"
+		echo "'D' - Delete"
+		echo "Anything else skips"
+		read pad_action
+		
+		if [ ${pad_action} == 'D' ]
 		then
 			rm ${pad}
 			break
-		else
-			pad_count=$((pad_count + 1))
 		fi
+		
+		if [ ${pad_action} == 'e' ]
+		then
+			break
+		fi
+		
+		pad_count=$((pad_count + 1))
+	
 	else
 		break
 	fi
