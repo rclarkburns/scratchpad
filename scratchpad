@@ -4,15 +4,58 @@
 
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in#answer-246128
 scratch_pad_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-if [ $# -eq 0 ]
+if [ $# == 0 ]
 then
 	pad_extension='.md'
 else
 	pad_extension=$1
 fi
-pad_count=1
-pad="${scratch_pad_dir}/pad${pad_extension}"
 
+# Count total scratchpads and correct numbering if needed
+pad_total=`ls -l ${scratch_pad_dir}/pad_* | wc -l`
+if (( ${pad_total} >= 1 ))
+then
+	echo "Checking existing scratchpads..."
+	pad_count=1
+	pad_total_checked=0
+	pad_move=0
+	while :
+	do
+		# All scratchpads accounted for, exit loop and move on with CRUD ops
+		if (( ${pad_total} == ${pad_total_checked} ))
+		then
+			echo "Scratchpads organized."
+			break
+		fi
+
+		pad="${scratch_pad_dir}/pad_${pad_count}${pad_extension}"
+
+		if [ -f "${pad}" ]
+		then
+
+			if (( ${pad_move} > 0 ))
+			then
+				pad_new="${scratch_pad_dir}/pad_${pad_move}${pad_extension}"
+				mv ${pad} ${pad_new}
+				pad_move=0
+				pad_count=1
+				pad_total_checked=0
+				continue
+			fi
+
+			pad_total_checked=$((pad_total_checked + 1))
+		else
+			pad_move=${pad_count}
+		fi
+
+		pad_count=$((pad_count + 1))
+
+	done
+
+fi
+
+pad_count=1
+pad="${scratch_pad_dir}/pad_${pad_count}${pad_extension}"
 while :
 do
 	pad="${scratch_pad_dir}/pad_${pad_count}${pad_extension}"
@@ -27,12 +70,18 @@ do
 		echo "'e' - Edit"
 		echo "'D' - Delete"
 		echo "Anything else skips"
-		read pad_action
+		read -s -n 1 pad_action
 
 		if [ ${pad_action} == 'D' ]
 		then
-			rm ${pad}
-			break
+			echo "[RESPOND!] DELETE THIS SCRATCHPAD?"
+			echo "'Y' - DELETE!"
+			echo "Anything else cancels this operation."
+			read -s -n 1 confirm_delete
+			if [ ${confirm_delete} == 'Y' ]
+			then
+				rm ${pad}
+			fi
 		fi
 
 		if [ ${pad_action} == 'e' ]
@@ -41,6 +90,7 @@ do
 		fi
 
 		pad_count=$((pad_count + 1))
+		clear
 
 	else
 		break
