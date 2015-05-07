@@ -3,6 +3,7 @@
 # Purpose - Simple scratchpad 
 
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in#answer-246128
+clear
 scratch_pad_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 if [ $# == 0 ]
 then
@@ -97,6 +98,23 @@ do
 	fi
 done
 
+touch ${pad}
+echo $(date +"%m/%d/%Y %r") > ${pad}
 vim ${pad}
-
-exit 0;
+echo "[RESPOND!] Remove newly created scratchpad?"
+echo "'D' - Delete"
+echo "Anything else skips"
+read -s -n 1 new_pad_action
+if [ ${new_pad_action} == 'D' ]
+	then
+		echo "[RESPOND!] DELETE THIS SCRATCHPAD?"
+		echo "'Y' - DELETE!"
+		echo "Anything else cancels this operation."
+		read -s -n 1 confirm_delete
+		if [ ${confirm_delete} == 'Y' ]
+		then
+			rm ${pad}
+		fi
+	fi
+echo "OK, bye!"
+exit 0
