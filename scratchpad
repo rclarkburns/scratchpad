@@ -57,6 +57,7 @@ fi
 
 pad_count=1
 pad="${scratch_pad_dir}/pad_${pad_count}${pad_extension}"
+pad_new=false
 while :
 do
 	pad="${scratch_pad_dir}/pad_${pad_count}${pad_extension}"
@@ -94,12 +95,17 @@ do
 		clear
 
 	else
+	pad_new=true
 		break
 	fi
 done
 
-touch ${pad}
-echo $(date +"%m/%d/%Y %r") > ${pad}
+if [[ ${pad_new} == true ]]
+then
+	touch ${pad}
+	echo $(date +"%m/%d/%Y %r") > ${pad}
+fi
+
 vim ${pad}
 echo "[RESPOND!] Remove newly created scratchpad?"
 echo "'D' - Delete"
